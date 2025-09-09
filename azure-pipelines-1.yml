@@ -1,0 +1,26 @@
+# Maven
+# Build your Java project and run tests with Apache Maven.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+trigger:
+  - main
+
+pool:
+  name: bmipool
+  demands:
+    - agent.name -equals bmiagent
+
+steps:
+  - task: Maven@4
+    inputs:
+      mavenPomFile: 'pom.xml'
+      goals: 'clean install'
+      javaHomeOption: 'Path'
+      jdkDirectory: 'C:\Program Files\Java\jdk-21'
+      mavenVersionOption: 'Default'
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish build artifact'
+    inputs:
+      targetPath: '$(System.DefaultWorkingDirectory)/target'
+      artifact: 'maven-build'
+      publishLocation: 'pipeline'
